@@ -14,7 +14,7 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 			});
 
-        var dbPath =Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),@"TrackUte.db");
+        var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),@"TrackUte.db");
         builder.Services.AddSingleton<DBAccess>(s => ActivatorUtilities.CreateInstance<DBAccess>(s, dbPath));
         builder.Services.AddMauiBlazorWebView();
 
