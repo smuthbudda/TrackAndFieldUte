@@ -1,7 +1,54 @@
-﻿@page "/"
+﻿@using Helpers;
+@using System.Diagnostics;
+@using objects;
+@inject DBAccess dbaccess
+@page "/"
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+This is a test
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<button onclick=@(async()=>await FillDataBase())>Fill DataBase</button>
+
+<button onclick=@(async()=>await GetItem())>Get Item</button>
+
+@pevent.Event
+
+@code{
+
+    PointsPerEvent pevent = new();
+
+    private async Task FillDataBase()
+    {
+        try
+        {
+            await ReadWithOtherPDFParser();
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
+    public async Task ReadWithOtherPDFParser()
+    {
+        ReadTable reader = new(@"C:\Users\jkdsa\source\repos\TrackAndFieldUtility\TrackAndFieldUtility\Helpers\PointsTable.pdf");
+        ReadTable newReader = new(@"C:\Users\jkdsa\source\repos\TrackAndFieldUtility\TrackAndFieldUtility\Helpers\IndoorTable.pdf");
+        Stopwatch stopWatch = new();
+        stopWatch.Start();
+        var indoor = newReader.ParsePDF();
+        var outdoor = reader.ParsePDF();
+        stopWatch.Stop();
+        var combo = new List<PointsPerEvent>();
+        combo.AddRange(indoor);
+        combo.AddRange(outdoor);
+        await dbaccess.FillTable(combo);
+    }
+
+    public async Task GetItem()
+    {
+        var e = await dbaccess.GetEvent(1);
+        pevent = e;
+    }
+
+}
